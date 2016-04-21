@@ -8,25 +8,25 @@ If template is product, do THIS.
 Show the top 10 best sellers.
 --------------------------------
 
-`{% assign best = collections["best-sellers"] %}
+``{% assign best = collections["best-sellers"] %}
 <ul>
 {% for product in best limit:10 %}
   <li><a href="{{ product.url }}">{{ product.title }}</a></li>
 {% endfor %}
-</ul>`
+</ul>``
 
 Output list of collections product is featured in on the product page.
 ----------------------------------------------------------------------
-`
+``
 <ul>
 {% for collection in product.collections %}
     <li><a href="{{ collection.url }}">{{ collection.title }}</a></li>
 {% endfor %}
 </ul>
-`
+``
 Add a link list in the footer.
 --------------------------------
-`
+``
 {% if linklists.footer.links.size > 0 %}
       <p role="navigation">
       {% for link in linklists.footer.links %}
@@ -34,7 +34,8 @@ Add a link list in the footer.
       {% endfor %}
       </p>
 {% endif %}
-`
+``
+
 Add h1 in the index template. Good for SEO. Only needs to be on the home page.
 ------------------------------------------------------------------------------
 `
