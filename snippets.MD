@@ -7,14 +7,14 @@ If template is product, do THIS.
 `
 Show the top 10 best sellers.
 --------------------------------
-`
-{% assign best = collections["best-sellers"] %}
+
+`{% assign best = collections["best-sellers"] %}
 <ul>
 {% for product in best limit:10 %}
   <li><a href="{{ product.url }}">{{ product.title }}</a></li>
 {% endfor %}
-</ul>
-`
+</ul>`
+
 Output list of collections product is featured in on the product page.
 ----------------------------------------------------------------------
 `
