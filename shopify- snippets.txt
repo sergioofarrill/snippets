@@ -72,5 +72,3 @@ Add a link list with handle
    <li {% if link.active %} class="active" {% endif %} >{{ link.title | link_to: link.url }}</li>
 {% endfor %}
 </ul>
-
-http://stephaniebertha.com/blog/2015/09/25/shopify-copy-and-pasteable-snippets/
