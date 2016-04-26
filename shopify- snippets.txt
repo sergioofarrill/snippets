@@ -72,3 +72,54 @@ Add a link list with handle
    <li {% if link.active %} class="active" {% endif %} >{{ link.title | link_to: link.url }}</li>
 {% endfor %}
 </ul>
+
+Sidebar menu with vendor and type
+---------------------------------
+
+{% if template contains 'collection' and collection.all_tags.size > 0 %}
+     
+      <ul class="side-navigation">
+
+        {% for link in linklists.sidebar-menu.links %}
+    
+
+        {% comment %} <!-- does this link in our iteration point to the current page? -->{% endcomment%}
+          {% assign current = false %}{% if template == 'index' and link.url == '/' %}{% assign current = true %}{% elsif collection.url == link.url %}{% assign current = true %}{% elsif blog.url == link.url %}{% assign current = true %}{% elsif page.url == link.url %}{% assign current = true %}{% elsif page_title == link.title %}{% assign current = true %}{% elsif template == 'list-collections' and link.url == '/collections' %}{% assign current = true %}{% elsif page_title == 'Products' and link.url == '/collections/all' %}{% assign current = true %}{% elsif template == 'article' and link.url == article.url %}{% assign current = true %}{% endif %}
+        {% comment %}  <!-- end of soul-searching about active class -->{% endcomment%}
+
+        <li{% if forloop.first %} class="first sidebar-item"{% else%} class="sidebar-item"{% endif %} >
+          <a{% if current %} class="active"{% endif %} href="{{ link.url }}">{{ link.title }}</a>
+
+          {% if link.title == 'Brand' and collection.handle == 'brand' or collection.current_vendor  %}
+          {% capture vendor_url %}{{ collection.current_vendor | url_for_vendor }}{% endcapture %}
+          <ul>
+            {% for product_vendor in shop.vendors %}
+              <li class="{{ product_vendor | handleize }}">
+                {{ product_vendor  | link_to_vendor }}
+              </li>
+          
+            {% endfor %}
+          </ul>
+          
+          {% elsif link.title == 'Theme' and collection.handle == 'theme' or collection.current_type %}
+          <ul>
+            {% for product_type in shop.types %}
+              <li class="{{ product_type | handleize }}">
+                {{ product_type | link_to_type }}
+              </li>
+            {% endfor %}
+          </ul>
+      
+          {%else%}
+          <ul>
+            {% for l in link %}
+            <li><a href="{{ l.url }}">{{ l.title }}</a></li>
+            {% endfor %}
+          </ul>
+          {% endif %}
+        </li>
+
+        {% endfor %}
+
+      </ul>
+{% endif %}
