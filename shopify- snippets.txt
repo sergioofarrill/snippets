@@ -76,53 +76,143 @@ Add a link list with handle
 Sidebar menu with vendor and type
 ---------------------------------
 
-{% if template contains 'collection' and collection.all_tags.size > 0 %}
+{{% comment %}
+  The code below relies on the advanced-tag-loop snippet.
+  The snippet is already included in snippets/breadrumbs.liquid
+  because it is needed there too, but if you remove
+  breadcrumbs you need to include this:
+
+  {% include 'advanced-tag-loop' %}
+{% endcomment %}
+
+{% if settings.collection_sidebar_filters == 'groups' %}
+  {% if collection.all_tags.size > 0 %}
+
+    <div class="grid-uniform">
+      {% comment %}
+        Loop through tag categories
+      {% endcomment %}
+
+      {% for cat_item in cat_array %}
+        <div class="grid-item small--one-half medium--one-third">
+          <h3>{{ cat_item }}</h3>
+          <ul class="advanced-filters">
+            {% comment %}
+              Loop through collection tags
+            {% endcomment %}
+            {% for tag in collection.all_tags %}
+              {% assign cat = tag | split: '_' | first %}              
+              {% if cat != tag and cat_item == cat %}
+                {% comment %}
+                  Strip out tag category prefix and add/remove link for tag filtering
+                {% endcomment %}
+                {% if current_tags contains tag %}
+                  <li class="advanced-filter active-filter" data-group="{{ cat_item }}" data-handle="{{ tag | handle }}">{{ tag | remove_first: cat_item | remove_first: '_' | link_to_remove_tag: tag }}</li>
+                {% else %}
+                  <li class="advanced-filter" data-group="{{ cat_item }}" data-handle="{{ tag | handle }}">{{ tag | remove_first: cat_item | remove_first: '_' | link_to_add_tag: tag }}</li>
+                {% endif %}
+              {% endif %}
+            {% endfor %}
+
+          </ul>
+        </div>
+      {% endfor %}
+    </div>
+
+    <script>
+    $(function() {
+      var filters = $('.advanced-filter'),
+        el,
+        elGroup,
+        elHandle,
+        activeTagInGroup;
+        
+      filters.on('click', function(e) {
+        el = $(this);
+        elGroup = el.data('group');
+        elHandle = el.data('handle');
+        activeTagInGroup = $('.active-filter[data-group="'+ elGroup +'"]');
+        // If the tag clicked is not already active and its group contains an active tag, we will swap tag within the group.
+        if ( !el.hasClass('active-filter')  && activeTagInGroup.size() ) {
+          e.preventDefault();
+          location.href = location.href
+            // swap tag
+            .replace(activeTagInGroup.data('handle'), elHandle)
+            // go back to page 1
+            .replace(/(&page=\d+)|(page=\d+&)|(\?page=\d+$)/, '');
+        }
+      });
+    });
+    </script>
+
+  {% endif %}
+{% else %}
+ 
+  {% if template contains 'collection' and collection.all_tags.size > 0 %}
      
-      <ul class="side-navigation">
-
-        {% for link in linklists.sidebar-menu.links %}
-    
-
-        {% comment %} <!-- does this link in our iteration point to the current page? -->{% endcomment%}
-          {% assign current = false %}{% if template == 'index' and link.url == '/' %}{% assign current = true %}{% elsif collection.url == link.url %}{% assign current = true %}{% elsif blog.url == link.url %}{% assign current = true %}{% elsif page.url == link.url %}{% assign current = true %}{% elsif page_title == link.title %}{% assign current = true %}{% elsif template == 'list-collections' and link.url == '/collections' %}{% assign current = true %}{% elsif page_title == 'Products' and link.url == '/collections/all' %}{% assign current = true %}{% elsif template == 'article' and link.url == article.url %}{% assign current = true %}{% endif %}
-        {% comment %}  <!-- end of soul-searching about active class -->{% endcomment%}
-
-        <li{% if forloop.first %} class="first sidebar-item"{% else%} class="sidebar-item"{% endif %} >
-          <a{% if current %} class="active"{% endif %} href="{{ link.url }}">{{ link.title }}</a>
-
-          {% if link.title == 'Brand' and collection.handle == 'brand' or collection.current_vendor  %}
-          {% capture vendor_url %}{{ collection.current_vendor | url_for_vendor }}{% endcapture %}
-          <ul>
-            {% for product_vendor in shop.vendors %}
-              <li class="{{ product_vendor | handleize }}">
-                {{ product_vendor  | link_to_vendor }}
-              </li>
-          
-            {% endfor %}
-          </ul>
-          
-          {% elsif link.title == 'Theme' and collection.handle == 'theme' or collection.current_type %}
-          <ul>
-            {% for product_type in shop.types %}
-              <li class="{{ product_type | handleize }}">
-                {{ product_type | link_to_type }}
-              </li>
-            {% endfor %}
-          </ul>
+  <ul class="sidebar-nav" id="accessibleNav">
+      {% unless linklists.sidebar-menu.links.first.url == '/' %}
+      <li class="large--hide">
+        <a href="/">{{ 'general.breadcrumbs.home' | t }}</a>
+      </li>
+      {% endunless %}
+      {% for link in linklists.sidebar-menu.links %}
       
-          {%else%}
-          <ul>
-            {% for l in link %}
-            <li><a href="{{ l.url }}">{{ l.title }}</a></li>
-            {% endfor %}
-          </ul>
-          {% endif %}
-        </li>
+      {% comment %} <!-- does this link in our iteration point to the current page? -->{% endcomment%}
+          {% assign current = false %}{% if template == 'index' and link.url == '/' %}{% assign current = true %}
+      {% elsif collection.url == link.url %}
+        {% assign current = true %}
+      {% elsif blog.url == link.url %}
+        {% assign current = true %}
+      {% elsif page.url == link.url %}
+        {% assign current = true %}
+      {% elsif page_title == link.title %}
+        {% assign current = true %}
+      {% elsif template == 'list-collections' and link.url == '/collections' %}
+        {% assign current = true %}
+      {% elsif page_title == 'Products' and link.url == '/collections/all' %}
+        {% assign current = true %}
+      {% elsif template == 'article' and link.url == article.url %}
+        {% assign current = true %}
+  {% endif %}
+      
+    {% assign child_list_handle = link.title | handleize %}
+  {% for childlink in linklists[child_list_handle].links %}
+      {%if childlink.url == collection.url %}
+          {% assign current = true %}
+      {%endif%}
+  {%endfor%}
+      
+      {% comment %}  <!-- end of soul-searching about active class -->{% endcomment%}
+      
+       
+        {% if linklists[child_list_handle].links != blank %}
+          <li class="side-nav--has-dropdown{% if link.active %} site-nav--active{% endif %}" aria-haspopup="true">
+            <a href="{{ link.url }}">
+              {{ link.title }}
+              <span class="icon-fallback-text">
+                <span class="icon icon-arrow-down" aria-hidden="true"></span>
+              </span>
+            </a>
+            <ul class="side-nav--dropdown {% if current == false %}hidden{% endif %}">
+              {% for childlink in linklists[child_list_handle].links %}
+                <li class="{% if childlink.active %}sub-nav--active{% endif %}"><a href="{{ childlink.url }}">{{ childlink.title | escape }}</a></li>
+              {% endfor %}
+            </ul>
+          </li>
+        {% else %}
+          <li {% if link.active %}class="site-nav--active"{% endif %}>
+            <a href="{{ link.url }}">{{ link.title }}</a>
+          </li>
+        {% endif %}
+      {% endfor %}
 
-        {% endfor %}
+    </ul>
 
-      </ul>
 {% endif %}
+{% endif %}
+
+
 
 BREADCRUMB MAGIC FOR SUBMENUS (place in breadcrumb.liquid)
 -----------------------------
