@@ -84,3 +84,127 @@ Formula for constant speed:
             return duration;
             console.log(duration);
           }
+
+THREE-BOX-THINKING
+———————————
+
+HTML
+<div class="three-box-thinking">
+  <div class="think-box">
+    <ul class="three-box-content">
+      <li>
+        <h2 class="three-box-title"> 
+          TARGET INSIGHT
+         </h2>
+      </li>
+      <li class="three-box-text">
+        <span>
+          Lorem ipsum dolor <br/>
+          sit amet, consectetur adipisicing elit. <br/> 
+          praesentium asperiores, dolorum
+        </span>
+      </li>
+    </ul>
+  </div>
+  <span class="box-between">+</span>
+  <div class="think-box">
+    <ul class="three-box-content">
+      <li>
+        <h2 class="three-box-title"> 
+          BRAND INSIGHT
+         </h2>
+      </li>
+      <li class="three-box-text">
+        <span>
+          Lorem ipsum dolor <br/>
+          sit amet, consectetur adipisicing elit. <br/> 
+          praesentium asperiores, dolorum
+        </span>
+      </li>
+    </ul>
+  </div>
+  <span class="box-between">=</span>
+  <div class="think-box">
+    <ul class="three-box-content">
+      <li>
+        <h2 class="three-box-title"> 
+          POWERFUL TRUTH
+         </h2>
+      </li>
+      <li class="three-box-text">
+        <span>
+          Lorem ipsum dolor <br/>
+          sit amet, consectetur adipisicing elit. <br/> 
+          praesentium asperiores, dolorum
+        </span>
+      </li>
+    </ul>
+  </div>
+</div>
+
+CSS
+ul {
+  padding: 0;
+  margin: 0;
+  list-style-type: none;
+  -webkit-margin-before: 0em;
+  -webkit-margin-after: 0em;
+  -webkit-margin-start: 0px;
+  -webkit-margin-end: 0px;
+  -webkit-padding-start: 0px;
+}
+
+.three-box-thinking {
+  display: flex;
+  display: -webkit-flex;
+  -webkit-justify-content: space-between;
+  justify-content: space-between;
+  -webkit-align-content: center;
+  align-content: center;
+  text-align: center;
+  padding: 30px 200px;
+  max-width:940px;
+  margin:0 auto;
+}
+
+.three-box-content > li {
+  list-style: none;
+  margin-top: 0;
+}
+
+.think-box {
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  -ms-box-sizing: border-box;
+  box-sizing: border-box;
+}
+
+.three-box-content {
+  height: 200px;
+  width: 250px;
+  -webkit-box-shadow: -11px 11px 36px -2px rgba(0,0,0,0.13);
+  -moz-box-shadow: -11px 11px 36px -2px rgba(0,0,0,0.13);
+  box-shadow: -11px 11px 36px -2px rgba(0,0,0,0.13);
+}
+
+.three-box-title {
+  min-height: 1em;
+  line-height: 20px;
+  padding: 10px 25px;
+  background-color: black;
+  color: white;
+  margin-top: 0;
+  font-size: 1.2em;
+}
+
+.three-box-text {
+  padding: 20px 5px;
+}
+
+.box-between {
+  font-size: 2.5em;
+  font-weight: 800;
+  color: rgba(17, 176, 192, 1);
+  position: relative;
+  top: 75px;
+}
