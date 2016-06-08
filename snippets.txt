@@ -208,3 +208,37 @@ ul {
   position: relative;
   top: 75px;
 }
+
+———————————————————————————————————
+Center and crop thumbnails with CSS
+———————————————————————————————————
+
+HTML
+<div class="thumbnail">
+  <img src="landscape-img.jpg" alt="Image" />
+</div>
+<div class="thumbnail">
+  <img src="portrait-img.jpg" class="portrait" alt="Image" />
+</div>
+
+CSS
+.thumbnail {
+  position: relative;
+  width: 200px;
+  height: 200px;
+  overflow: hidden;
+}
+.thumbnail img {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  height: 100%;
+  width: auto;
+  -webkit-transform: translate(-50%,-50%);
+      -ms-transform: translate(-50%,-50%);
+          transform: translate(-50%,-50%);
+}
+.thumbnail img.portrait {
+  width: 100%;
+  height: auto;
+}
