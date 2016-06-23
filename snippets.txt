@@ -75,6 +75,16 @@ Add a link list with handle
 
 http://stephaniebertha.com/blog/2015/09/25/shopify-copy-and-pasteable-snippets/
 
+Show image in collection from cms as featured image
+————————————————————————— 
+
+div class="featured-box--image">
+        {% if collections[featured].image %}
+          {{ collections[featured].image | img_url: featured_collection_size | img_tag: collection_title, 'circle_img' }}
+        {% else %}
+          {{ collections[featured].products.first.featured_image | img_url: featured_collection_size | img_tag: collection_title, 'circle_img, featured--collection_img' }}
+        {% endif %}
+
 
 Formula for constant speed: 
 ---------------------------
@@ -242,3 +252,13 @@ CSS
   width: 100%;
   height: auto;
 }
+
+———————————————————————————————————
+No Scroll When Colorbox is Open
+———————————————————————————————————
+
+$(document).bind('cbox_open', function() {
+    $('html').css({ overflow: 'hidden' });
+}).bind('cbox_closed', function() {
+    $('html').css({ overflow: '' });
+});
